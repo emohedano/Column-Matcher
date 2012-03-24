@@ -1,8 +1,8 @@
-{
-    "verde": "#00FF00",
-    "rojo": "#FF0000",
-    "blanco": "#eeeeee",
-    "azul": "#0000FF",
-    "naranja": "#FF8E0D",
-    "amarillo": "#FFD430"
-}
+[
+    {"id":"verde","label": "verde","color": "#00FF00"},
+    {"id":"rojo","label": "rojo","color": "#FF0000"},
+    {"id":"blanco","label": "blanco","color": "#eeeeee"},
+    {"id":"azul","label": "azul","color": "#0000FF"},
+    {"id":"naranja","label": "naranja","color": "#FF8E0D"},
+    {"id":"amarillo","label": "amarillo","color": "#FFD430"}
+]
