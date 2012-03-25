@@ -214,5 +214,5 @@ function calculateEndPoint(element) {
 
 
 
-generaLista('fruits','fruits.json','lr');
-generaLista('colors','colors.json','lr');
+generaLista('fruits','/gh/get/response.json/emohedano/Column-Matcher/tree/master/Demo/fruits/','lr');
+generaLista('colors','/gh/get/response.json/emohedano/Column-Matcher/tree/master/Demo/colors/','lr');​
