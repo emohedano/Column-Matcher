@@ -1,0 +1,31 @@
+{
+    "limon": [
+        "verde"
+    ],
+    "manzana": [
+        "verde",
+        "rojo",
+        "amarillo"
+    ],
+    "chirimoya": [
+        "blanco"
+    ],
+    "sandia": [
+        "verde"
+    ],
+    "platano": [
+        "amarillo"
+    ],
+    "mango": [
+        "amarillo"
+    ],
+    "papaya": [
+        "anaranjado"
+    ],
+    "mora": [
+        "azul"
+    ],
+    "durazno": [
+        "durazno"
+    ]
+}

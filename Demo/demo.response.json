@@ -1,0 +1,47 @@
+[
+    {
+        "id": "limon",
+        "label": "limon",
+        "color": ""
+    },
+    {
+        "id": "manzana",
+        "label": "manzana",
+        "color": ""
+    },
+    {
+        "id": "chirimoya",
+        "label": "chirimoya",
+        "color": ""
+    },
+    {
+        "id": "sandia",
+        "label": "sandia",
+        "color": ""
+    },
+    {
+        "id": "platano",
+        "label": "platano",
+        "color": ""
+    },
+    {
+        "id": "papaya",
+        "label": "papaya",
+        "color": ""
+    },
+    {
+        "id": "mango",
+        "label": "mango",
+        "color": ""
+    },
+    {
+        "id": "mora",
+        "label": "mora",
+        "color": ""
+    },
+    {
+        "id": "durazno",
+        "label": "durazno",
+        "color": ""
+    }
+]
