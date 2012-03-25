@@ -1,5 +1,8 @@
-var selectedElement = null;
+
+var firstElement = null;
 var connectorColor = null;
+
+var existentColumns = {};
 
 function is_array (object) {
     return typeof(object) == 'object' && (object instanceof Array);
@@ -25,7 +28,7 @@ Ejemplos:
 
 */
 
-function generaLista(name, urlData, conectors) {
+function generaLista(name, urlData, conectors, relatedLists) {
 
 	var list = '';
 
@@ -34,6 +37,9 @@ function generaLista(name, urlData, conectors) {
 		
 		//var fragment = document.createDocumentFragment();
 		
+
+		existentColumns[name] = data;
+
 		$.each(data, function (key, val) {
 
 
@@ -46,7 +52,7 @@ function generaLista(name, urlData, conectors) {
 
 			var colorElement = 'data-color-element="' + columnElement.color + '"';
 
-			
+
 			
 			if(conectors.indexOf('*') >- 1) {
 
@@ -99,7 +105,7 @@ function generaLista(name, urlData, conectors) {
 			$(this).css("backgroundColor","#cccccc")
 
 		}, function() {					
-			if(this != selectedElement)
+			if(this != firstElement)
 				$(this).css("backgroundColor","#ffffff")
 
 		});
@@ -110,39 +116,47 @@ function generaLista(name, urlData, conectors) {
 
 function clickOnEndpoint(element) {
 
-	var thisElement= element;
+	var secondElement= element;
 
 	var idSelectedElement = null;
 
-			if( selectedElement == null) {
+			if( firstElement == null) {
 
-				selectedElement = thisElement;
+				firstElement = secondElement;
 
-				idSelectedElement = thisElement.dataset.idElement
+				idSelectedElement = secondElement.dataset.idElement
 
 				if(connectorColor == null || connectorColor == "null" || connectorColor == "")
 					connectorColor=document.getElementById(idSelectedElement).dataset.colorElement;
-
 				
-				$(selectedElement).css("backgroundColor","#cccccc")
+				$(firstElement).css("backgroundColor","#cccccc")
 
 			} else {
 
-				idSelectedElement = selectedElement.dataset.idElement;
+				idSelectedElement = firstElement.dataset.idElement;
 
 				
 				if(connectorColor == null || connectorColor == "null" || connectorColor == "")
-					connectorColor=document.getElementById(thisElement.dataset.idElement).dataset.colorElement;
+					connectorColor=document.getElementById(secondElement.dataset.idElement).dataset.colorElement;
 
-				var xSelectedElement = selectedElement.offsetLeft;
-				var ySelectedElement = selectedElement.offsetTop;
-
-				var xCurrentElement = thisElement.offsetLeft;
-				var yCurrentElement = thisElement.offsetTop;
+				//Se determinan las coordenadas de los endpoints
+				var firstEndpoint = calculateEndPoint(firstElement);
+				var secondEndpoint = calculateEndPoint(secondElement);
 
 
-				if(document.getElementById(idSelectedElement  +  thisElement.dataset.idElement + "Curve") != null)
-					$("#" + idSelectedElement  +  thisElement.dataset.idElement + "Curve").attr("d","M " + xSelectedElement + " " + ySelectedElement + " T " + e.x + " " + e.y);
+				var x1 = firstEndpoint.x;
+				var y1 = firstEndpoint.y;
+
+				var x2 = secondEndpoint.x;
+				var y2 = secondEndpoint.y;
+
+
+				//Se determinan las coordenadas del punto de control utilizado para modificar la curva cuadratica
+				var controlPoint = calculateControlPoint(x1, y1, x2, y2);
+
+
+				if(document.getElementById(idSelectedElement  +  secondElement.dataset.idElement + "Curve") != null)
+					$("#" + idSelectedElement  +  secondElement.dataset.idElement + "Curve").attr("d","M " + x1 + " " + y1 + " T " + e.x + " " + e.y);
 				else {
 
 					var SVG = {};
@@ -150,9 +164,12 @@ function clickOnEndpoint(element) {
 
 					var path = document.createElementNS(SVG.ns, "path");
 
-					path.setAttribute("id", '"' + idSelectedElement  +  thisElement.dataset.idElement + 'Curve"');
-					path.setAttribute("d", 'M ' + xSelectedElement + ' ' + ySelectedElement + ' Q ' + (xCurrentElement  +  300) + ' ' + (yCurrentElement) + ' ' + xCurrentElement + ' ' + yCurrentElement);
+					path.setAttribute("id", '"' + idSelectedElement  +  secondElement.dataset.idElement + 'Curve"');
+
+					//Se genera la curva cuadratica
+					path.setAttribute("d", 'M ' + x1 + ' ' + y1 + ' Q ' + controlPoint.x + ' ' + controlPoint.y + ' ' + x2 + ' ' + y2);
 					
+					//Se decora la curva
 					path.setAttribute("stroke", connectorColor);
 					path.setAttribute("stroke-width", '5');
 					path.setAttribute("fill", 'none');
@@ -160,13 +177,41 @@ function clickOnEndpoint(element) {
 					document.getElementById("curves").appendChild(path);
 				}
 
-				selectedElement = null;
+				firstElement = null;
 				connectorColor = null;
 				$('#' + idSelectedElement + ' div').css("backgroundColor","#ffffff")
 
 			}
 
 }
+
+function calculateControlPoint(x1, y1, x2, y2) {
+
+	var x = x2;
+	var y = y1;
+
+	return {"x":x, "y":y};
+}
+
+
+function calculateEndPoint(element) {
+
+	var x;
+	var y;
+
+	if(element.className.indexOf("left") > -1 || element.className.indexOf("right") > -1){
+		x = element.offsetLeft + element.offsetWidth/2;
+		y = element.offsetTop + element.offsetHeight/2;
+	}
+	
+	if(element.className.indexOf("top") > -1 || element.className.indexOf("bottom") > -1){
+		x = element.offsetLeft + element.offsetWidth/2;
+		y = element.offsetTop + element.offsetHeight/2;
+	}
+	
+	return {"x":x, "y":y};
+}
+
 
 
 generaLista('fruits','fruits.json','lr');

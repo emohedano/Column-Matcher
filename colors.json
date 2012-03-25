@@ -1,8 +1,32 @@
 [
-    {"id":"verde","label": "verde","color": "#00FF00"},
-    {"id":"rojo","label": "rojo","color": "#FF0000"},
-    {"id":"blanco","label": "blanco","color": "#eeeeee"},
-    {"id":"azul","label": "azul","color": "#0000FF"},
-    {"id":"naranja","label": "naranja","color": "#FF8E0D"},
-    {"id":"amarillo","label": "amarillo","color": "#FFD430"}
+    {
+        "id": "verde",
+        "label": "verde",
+        "color": "#00FF00"
+    },
+    {
+        "id": "rojo",
+        "label": "rojo",
+        "color": "#FF0000"
+    },
+    {
+        "id": "blanco",
+        "label": "blanco",
+        "color": "#eeeeee"
+    },
+    {
+        "id": "azul",
+        "label": "azul",
+        "color": "#0000FF"
+    },
+    {
+        "id": "naranja",
+        "label": "naranja",
+        "color": "#FF8E0D"
+    },
+    {
+        "id": "amarillo",
+        "label": "amarillo",
+        "color": "#FFD430"
+    }
 ]
