@@ -20,16 +20,13 @@ Ejemplos:
 
 */
 
-function generaLista(name, urlData, conectors, callback) {
+function generaLista(name, data, conectors, callback) {
 
 	var list = '';
-
-
-	$.getJSON(urlData, function (data) {		
+	
 		
 		//var fragment = document.createDocumentFragment();
 		
-
 		$.each(data, function (key, val) {
 
 
@@ -46,7 +43,7 @@ function generaLista(name, urlData, conectors, callback) {
 				element = '<li id="' + columnElement.id + '" ' + colorElement + ' ' + listId + '>' +
 							'<div class="top" ' + idElement + '></div>' +
 							'<div class="inline left" ' + idElement + '></div>' +
-							'<div class="inline center" ' + idElement + '>' + columnElement.label + '</div>' +
+							'<div class="inline center" ' + idElement + '>' + columnElement.id + '</div>' +
 							'<div class="inline right" ' + idElement + '></div>' +
 							'<div class="bottom" ' + idElement + '></div>' +
 							'</li>';
@@ -61,7 +58,7 @@ function generaLista(name, urlData, conectors, callback) {
 				if(conectors.indexOf('l') > -1)
 					element  += '<div class="inline left" ' + idElement + '></div>';
 
-				element  += '<div class="inline center" ' + idElement + '>' + columnElement.label + '</div>';
+				element  += '<div class="inline center" ' + idElement + '>' + columnElement.id + '</div>';
 
 				if(conectors.indexOf('r') > -1)
 					element  += '<div class="inline right" ' + idElement + '></div>';
@@ -94,8 +91,7 @@ function generaLista(name, urlData, conectors, callback) {
 		}, function() {					
 			if(this != firstEndpoint)
 				$(this).css("backgroundColor","#ffffff")
-
-		});
+		
 
 		//Se ejecuta la funcion de callback
 		if(callback != undefined)			
@@ -152,7 +148,8 @@ function clickOnEndpoint(element) {
 
 
 				//Se determinan las coordenadas del punto de control utilizado para modificar la curva cuadratica
-				var controlPoint = calculateControlPoint(x1, y1, x2, y2);
+				var controlPoint = calculateControlPoint(x1, y1, x2, y2,"first");
+				var controlPoint2 = calculateControlPoint(x1, y1, x2, y2, "second");
 
 
 				if(document.getElementById(idFirstElement  +  secondEndpoint.dataset.idElement + "Curve") != null)
@@ -167,7 +164,7 @@ function clickOnEndpoint(element) {
 					path.setAttribute("implicatedElements", idFirstElement  + ' ' + secondEndpoint.dataset.idElement);
 
 					//Se genera la curva cuadratica
-					path.setAttribute("d", 'M ' + x1 + ' ' + y1 + ' Q ' + controlPoint.x + ' ' + controlPoint.y + ' ' + x2 + ' ' + y2);
+					path.setAttribute("d", 'M ' + x1 + ' ' + y1 + ' C ' + controlPoint.x + ' ' + controlPoint.y + ' ' + controlPoint2.x + ' ' + controlPoint2.y + ' ' + x2 + ' ' + y2);
 					
 					//Se decora la curva
 					path.setAttribute("stroke", connectorColor);
@@ -189,10 +186,21 @@ function clickOnEndpoint(element) {
 /*
  *Funcion que determina la posicion del punto de control para dibujar la curva cuadratica
 */
-function calculateControlPoint(x1, y1, x2, y2) {
+function calculateControlPoint(x1, y1, x2, y2, type) {
 
-	var x = x2;
-	var y = y1;
+	var x = null;
+	var y = null;
+
+	if(type == "first"){
+
+		x = x1+((x2-x1)/2);
+		y = y1;
+
+	}else if(type == "second"){
+
+		x = x1+((x2-x1)/2);
+		y = y2;
+	}
 
 	return {"x":x, "y":y};
 }
@@ -238,11 +246,17 @@ function validate(listName) {
 		if(validElements != undefined){
 		
 			//Si el segundo elemento no es un elemento valido
-			if(validElements[implicatedColumns[1]].indexOf(implicatedElements[1]) < 0){
-				$(this).remove();
+			if(validElements[implicatedColumns[1]].indexOf(implicatedElements[1]) < 0){				
+				this.setAttribute("stroke-dasharray", "5,5");
+				this.setAttribute("stroke", "#000000");		
+
 				errores += 1;
-			}else
+				$("#"+implicatedElements[0]).find("div.center").css({backgroundImage:"url(bad.png)"})
+
+			}else{
 				aciertos += 1;
+				$("#"+implicatedElements[0]).find("div.center").css({backgroundImage:"url(good.png)"})
+			}
 
 		}else{
 
@@ -250,10 +264,14 @@ function validate(listName) {
 
 			//Si el primer elemento no es un elemento valido
 			if(validElements[implicatedColumns[0]].indexOf(implicatedElements[0]) < 0){
-				$(this).remove();
-				errores += 1;
-			}else
+				this.setAttribute("stroke-dasharray", "5,5");
+				this.setAttribute("stroke", "#000000");
+				$("#"+implicatedElements[1]).find("div.center").css({backgroundImage:"url(bad.png)"})
+
+			}else{
 				aciertos += 1;
+				$("#"+implicatedElements[1]).find("div.center").css({backgroundImage:"url(good.png)"})
+			}
 			
 		}
 
@@ -273,36 +291,39 @@ function reset(listName) {
 
 	});
 
+	$("div.center").css({backgroundImage:""});
+
 	document.getElementById("txtAciertos").value = 0;
 	document.getElementById("txtErrores").value = 0;
 
 }
 
 
-function addListValidationrules(list1, list2, urlValidationData){
+function addListValidationrules(list1, list2, data){
 
-	$.getJSON(urlValidationData, function (data){
+	
+	$.each(data, function (key, val){
 
-		$.each(data, function (key, val){
+		var validMatch= {};
 
-			var validMatch= {};
+		validMatch[list2] = val;
 
-			validMatch[list2] = val;
-
-			//Se asignan los elementos validos con los que se puede conectar un elemento de la lista uno en la lista 2
-			//Se usa  jQuery.data cuando se manejan objetos JSON
-			jQuery.data(document.getElementById(key), "validMatch", validMatch);
-
-		});
+		//Se asignan los elementos validos con los que se puede conectar un elemento de la lista uno en la lista 2
+		//Se usa  jQuery.data cuando se manejan objetos JSON
+		jQuery.data(document.getElementById(key), "validMatch", validMatch);
 
 	});
 
 }
 
+$(document).ready(function(){
 
-generaLista('fruits','fruits.json','rc', function(){
 
-	addListValidationrules('fruits', 'colors', 'fruits_color.json');	
+	generaLista('fruits',columna,'c', function(){
+
+		addListValidationrules('fruits', 'colors', columna_columnb);	
+	});
+
+	generaLista('colors',columnb,'c');
+
 });
-
-generaLista('colors','colors.json','lc');

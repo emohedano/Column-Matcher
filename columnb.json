@@ -1,0 +1,14 @@
+columnb = [    
+    {
+        "id": "rojo",
+        "color": "#FF0000"
+    },
+    {
+        "id": "anaranjado",
+        "color": "#FF8E0D"
+    },
+    {
+        "id": "verde",
+        "color": "#00FF00"
+    }
+]

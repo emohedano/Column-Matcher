@@ -1,0 +1,22 @@
+columna = [
+    {
+        "id": "pera",
+        "color": ""
+    },
+    {
+        "id": "sandia",
+        "color": ""
+    },
+    {
+        "id": "fresa",
+        "color": ""
+    },
+    {
+        "id": "naranja",
+        "color": ""
+    },
+    {
+        "id": "limon",
+        "color": ""
+    }
+]

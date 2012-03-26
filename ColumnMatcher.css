@@ -63,6 +63,7 @@ ul li{
 
 .center{				
 	background-color: #FFF;
+	background: no-repeat;
 	border:solid 1px #ccc;
 	width: 100px;
 	height:40px;
