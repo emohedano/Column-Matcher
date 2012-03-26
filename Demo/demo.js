@@ -1,14 +1,6 @@
 
-var firstElement = null;
+var firstEndpoint = null;
 var connectorColor = null;
-
-var existentColumns = {};
-
-function is_array (object) {
-    return typeof(object) == 'object' && (object instanceof Array);
-}
-
-
 /*
 GeneraLista
 
@@ -28,7 +20,7 @@ Ejemplos:
 
 */
 
-function generaLista(name, urlData, conectors, relatedLists) {
+function generaLista(name, urlData, conectors, callback) {
 
 	var list = '';
 
@@ -38,35 +30,30 @@ function generaLista(name, urlData, conectors, relatedLists) {
 		//var fragment = document.createDocumentFragment();
 		
 
-		existentColumns[name] = data;
-
 		$.each(data, function (key, val) {
 
 
 			var columnElement = val;
-
-			var element = '';
-
-			
+			var element = '';			
 			var idElement = 'data-id-element="' + columnElement.id + '"';
-
 			var colorElement = 'data-color-element="' + columnElement.color + '"';
+			var listId = 'data-list-id="' + name + '"';
 
 
-			
+			//Si se van a agregar todos los endpoints
 			if(conectors.indexOf('*') >- 1) {
 
-				element = '<li id="' + columnElement.id + '" ' + colorElement + '>' +
+				element = '<li id="' + columnElement.id + '" ' + colorElement + ' ' + listId + '>' +
 							'<div class="top" ' + idElement + '></div>' +
 							'<div class="inline left" ' + idElement + '></div>' +
-							'<div class="inline center">' + columnElement.label + '</div>' +
+							'<div class="inline center" ' + idElement + '>' + columnElement.label + '</div>' +
 							'<div class="inline right" ' + idElement + '></div>' +
 							'<div class="bottom" ' + idElement + '></div>' +
 							'</li>';
 
 			} else {
 
-				element  += '<li id="' + columnElement.id + '" ' + colorElement + '>';
+				element  += '<li id="' + columnElement.id + '" ' + colorElement + ' ' + listId + '>';
 
 				if(conectors.indexOf('t') > -1)
 					element  += '<div class="top" ' + idElement + '></div>';
@@ -74,7 +61,7 @@ function generaLista(name, urlData, conectors, relatedLists) {
 				if(conectors.indexOf('l') > -1)
 					element  += '<div class="inline left" ' + idElement + '></div>';
 
-				element  += '<div class="inline center">' + columnElement.label + '</div>';
+				element  += '<div class="inline center" ' + idElement + '>' + columnElement.label + '</div>';
 
 				if(conectors.indexOf('r') > -1)
 					element  += '<div class="inline right" ' + idElement + '></div>';
@@ -94,21 +81,27 @@ function generaLista(name, urlData, conectors, relatedLists) {
 
 		//funcion que se ejecuta al dar click a cualquier endpoint
 					
-		$('#' + name + ' li ').find("div.top, div.left, div.right, div.bottom").click( function(e) {				
+		$('#' + name + ' li ').find("div.top, div.left, div.right, div.bottom, div.center").click( function(e) {				
 			
 			clickOnEndpoint(this);
 
 		});
 
-		$('#' + name + ' li ').find("div.top, div.left, div.right, div.bottom").hover(function() {				
+		$('#' + name + ' li ').find("div.top, div.left, div.right, div.bottom, div.center").hover(function() {				
 			
 			$(this).css("backgroundColor","#cccccc")
 
 		}, function() {					
-			if(this != firstElement)
+			if(this != firstEndpoint)
 				$(this).css("backgroundColor","#ffffff")
 
 		});
+
+		//Se ejecuta la funcion de callback
+		if(callback != undefined)			
+			callback();
+		
+
 
 	});
 }
@@ -116,55 +109,62 @@ function generaLista(name, urlData, conectors, relatedLists) {
 
 function clickOnEndpoint(element) {
 
-	var secondElement= element;
+	
 
-	var idSelectedElement = null;
+	var idFirstElement = null;
 
-			if( firstElement == null) {
 
-				firstElement = secondElement;
 
-				idSelectedElement = secondElement.dataset.idElement
+			if( firstEndpoint == null) {
+
+				firstEndpoint = element;
+				idFirstElement = element.dataset.idElement
 
 				if(connectorColor == null || connectorColor == "null" || connectorColor == "")
-					connectorColor=document.getElementById(idSelectedElement).dataset.colorElement;
+					connectorColor=document.getElementById(idFirstElement).dataset.colorElement;
 				
-				$(firstElement).css("backgroundColor","#cccccc")
+				$(firstEndpoint).css("backgroundColor","#cccccc")
+
 
 			} else {
 
-				idSelectedElement = firstElement.dataset.idElement;
 
+				var secondEndpoint= element;
+				idFirstElement = firstEndpoint.dataset.idElement;
+				idSecondElement = secondEndpoint.dataset.idElement;
+
+				var firstElement = document.getElementById(idFirstElement);
+				var secondElement = document.getElementById(idSecondElement);
 				
 				if(connectorColor == null || connectorColor == "null" || connectorColor == "")
-					connectorColor=document.getElementById(secondElement.dataset.idElement).dataset.colorElement;
+					connectorColor = secondElement.dataset.colorElement;
 
 				//Se determinan las coordenadas de los endpoints
-				var firstEndpoint = calculateEndPoint(firstElement);
-				var secondEndpoint = calculateEndPoint(secondElement);
+				firstEndpoint.coords = calculateEndPoint(firstEndpoint);
+				secondEndpoint.coords = calculateEndPoint(secondEndpoint);
 
 
-				var x1 = firstEndpoint.x;
-				var y1 = firstEndpoint.y;
+				var x1 = firstEndpoint.coords.x;
+				var y1 = firstEndpoint.coords.y;
 
-				var x2 = secondEndpoint.x;
-				var y2 = secondEndpoint.y;
+				var x2 = secondEndpoint.coords.x;
+				var y2 = secondEndpoint.coords.y;
 
 
 				//Se determinan las coordenadas del punto de control utilizado para modificar la curva cuadratica
 				var controlPoint = calculateControlPoint(x1, y1, x2, y2);
 
 
-				if(document.getElementById(idSelectedElement  +  secondElement.dataset.idElement + "Curve") != null)
-					$("#" + idSelectedElement  +  secondElement.dataset.idElement + "Curve").attr("d","M " + x1 + " " + y1 + " T " + e.x + " " + e.y);
+				if(document.getElementById(idFirstElement  +  secondEndpoint.dataset.idElement + "Curve") != null)
+					$("#" + idFirstElement  +  secondEndpoint.dataset.idElement + "Curve").attr("d","M " + x1 + " " + y1 + " T " + e.x + " " + e.y);
 				else {
 
-					var SVG = {};
-					SVG.ns = "http://www.w3.org/2000/svg";
-
+					var SVG = { ns: "http://www.w3.org/2000/svg" };
 					var path = document.createElementNS(SVG.ns, "path");
 
-					path.setAttribute("id", '"' + idSelectedElement  +  secondElement.dataset.idElement + 'Curve"');
+					path.setAttribute("id", '"' + idFirstElement  +  secondEndpoint.dataset.idElement + 'Curve"');
+					path.setAttribute("class", firstElement.dataset.listId  + ' ' + secondElement.dataset.listId);
+					path.setAttribute("implicatedElements", idFirstElement  + ' ' + secondEndpoint.dataset.idElement);
 
 					//Se genera la curva cuadratica
 					path.setAttribute("d", 'M ' + x1 + ' ' + y1 + ' Q ' + controlPoint.x + ' ' + controlPoint.y + ' ' + x2 + ' ' + y2);
@@ -177,14 +177,18 @@ function clickOnEndpoint(element) {
 					document.getElementById("curves").appendChild(path);
 				}
 
-				firstElement = null;
+				firstEndpoint = null;
 				connectorColor = null;
-				$('#' + idSelectedElement + ' div').css("backgroundColor","#ffffff")
+
+				$('#' + idFirstElement + ' div').css("backgroundColor","#ffffff")
 
 			}
 
 }
 
+/*
+ *Funcion que determina la posicion del punto de control para dibujar la curva cuadratica
+*/
 function calculateControlPoint(x1, y1, x2, y2) {
 
 	var x = x2;
@@ -194,25 +198,96 @@ function calculateControlPoint(x1, y1, x2, y2) {
 }
 
 
+
+/*
+ *Funcion que determina la posicion de los puntos inicial y final de la curva
+*/
+
 function calculateEndPoint(element) {
 
 	var x;
 	var y;
 
-	if(element.className.indexOf("left") > -1 || element.className.indexOf("right") > -1){
-		x = element.offsetLeft + element.offsetWidth/2;
-		y = element.offsetTop + element.offsetHeight/2;
-	}
-	
-	if(element.className.indexOf("top") > -1 || element.className.indexOf("bottom") > -1){
-		x = element.offsetLeft + element.offsetWidth/2;
-		y = element.offsetTop + element.offsetHeight/2;
-	}
-	
+	x = element.offsetLeft + element.offsetWidth/2;
+	y = element.offsetTop + element.offsetHeight/2;	
+
 	return {"x":x, "y":y};
+
 }
 
 
+function validate(listName) {
 
-generaLista('fruits','/gh/get/response.json/emohedano/Column-Matcher/tree/master/Demo/fruits/','lr');
-generaLista('colors','/gh/get/response.json/emohedano/Column-Matcher/tree/master/Demo/colors/','lr');​
+	$("path"+((listName != "")?("."+listName):"")).each(function (key, val) {
+		
+		var connection = document.getElementById(this.id);
+
+		//Se obtienen los IDs de las comlumnas implicadas en la relacion
+		var implicatedColumns = connection.getAttribute("class").split(" ");
+
+		//Se obtienen los IDs de los elementos implicadas en la relacion
+		var implicatedElements = connection.getAttribute("implicatedElements").split(" ");
+
+		//Se usa  jQuery.data cuando se manejan objetos JSON
+		var validElements = jQuery.data(document.getElementById(implicatedElements[0]), "validMatch");
+
+		//Si el primer elemento tiene las lista de elementos validos
+		if(validElements != undefined){
+		
+			//Si el segundo elemento no es un elemento valido
+			if(validElements[implicatedColumns[1]].indexOf(implicatedElements[1]) < 0)
+				$(this).remove();
+
+		}else{
+
+			validElements = jQuery.data(document.getElementById(implicatedElements[1]), "validMatch");
+
+			//Si el primer elemento no es un elemento valido
+			if(validElements[implicatedColumns[0]].indexOf(implicatedElements[0]) < 0)
+				$(this).remove();
+			
+		}
+
+
+	});
+
+}
+
+function reset(listName) {
+
+	$("path"+((listName != "")?("."+listName):"")).each(function (key, val) {
+			
+		$(this).remove();
+
+	});
+
+}
+
+
+function addListValidationrules(list1, list2, urlValidationData){
+
+	$.getJSON(urlValidationData, function (data){
+
+		$.each(data, function (key, val){
+
+			var validMatch= {};
+
+			validMatch[list2] = val;
+
+			//Se asignan los elementos validos con los que se puede conectar un elemento de la lista uno en la lista 2
+			//Se usa  jQuery.data cuando se manejan objetos JSON
+			jQuery.data(document.getElementById(key), "validMatch", validMatch);
+
+		});
+
+	});
+
+}
+
+
+generaLista('fruits','/gh/get/response.json/emohedano/Column-Matcher/tree/master/Demo/fruits/','rc', function(){
+
+	addListValidationrules('fruits', 'colors', '/gh/get/response.json/emohedano/Column-Matcher/tree/master/Demo/fruits_color/');	
+});
+
+generaLista('colors','/gh/get/response.json/emohedano/Column-Matcher/tree/master/Demo/colors/','lc');
