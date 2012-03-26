@@ -88,6 +88,7 @@ ul li{
 
 #btnReset{
 	background-color: rgba(255,228,13,.3);
+	margin-right: 280px;
 }
 
 #menu{
@@ -95,3 +96,23 @@ ul li{
 	left:200px;
 }
 
+label {
+
+	font-size:12px;
+	margin-left: 10px;
+	font-weight:bold;
+}
+
+#menu input[type=text]{
+	width:20px;
+	border:none;
+	text-align:right;
+}
+
+#txtAciertos{
+	color: #00cc00;
+}
+
+#txtErrores{
+	color: #FF0000;
+}

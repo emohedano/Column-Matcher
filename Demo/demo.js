@@ -218,6 +218,9 @@ function calculateEndPoint(element) {
 
 function validate(listName) {
 
+	var aciertos = 0;
+	var errores = 0;
+
 	$("path"+((listName != "")?("."+listName):"")).each(function (key, val) {
 		
 		var connection = document.getElementById(this.id);
@@ -235,21 +238,30 @@ function validate(listName) {
 		if(validElements != undefined){
 		
 			//Si el segundo elemento no es un elemento valido
-			if(validElements[implicatedColumns[1]].indexOf(implicatedElements[1]) < 0)
+			if(validElements[implicatedColumns[1]].indexOf(implicatedElements[1]) < 0){
 				$(this).remove();
+				errores += 1;
+			}else
+				aciertos += 1;
 
 		}else{
 
 			validElements = jQuery.data(document.getElementById(implicatedElements[1]), "validMatch");
 
 			//Si el primer elemento no es un elemento valido
-			if(validElements[implicatedColumns[0]].indexOf(implicatedElements[0]) < 0)
+			if(validElements[implicatedColumns[0]].indexOf(implicatedElements[0]) < 0){
 				$(this).remove();
+				errores += 1;
+			}else
+				aciertos += 1;
 			
 		}
 
 
 	});
+
+	document.getElementById("txtAciertos").value = aciertos;
+	document.getElementById("txtErrores").value = errores;
 
 }
 
@@ -260,6 +272,9 @@ function reset(listName) {
 		$(this).remove();
 
 	});
+
+	document.getElementById("txtAciertos").value = 0;
+	document.getElementById("txtErrores").value = 0;
 
 }
 
