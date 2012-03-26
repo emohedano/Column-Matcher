@@ -266,6 +266,8 @@ function validate(listName) {
 			if(validElements[implicatedColumns[0]].indexOf(implicatedElements[0]) < 0){
 				this.setAttribute("stroke-dasharray", "5,5");
 				this.setAttribute("stroke", "#000000");
+				
+				errores += 1;
 				$("#"+implicatedElements[1]).find("div.center").css({backgroundImage:"url(bad.png)"})
 
 			}else{
