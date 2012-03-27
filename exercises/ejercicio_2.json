@@ -1,0 +1,50 @@
+ejercicios["ejercicio_2"] = {
+    "columnA": [
+        {
+            "id": "animal",
+            "color": "#8A04E8"
+        },
+        {
+            "id": "vegetal",
+            "color": "#1552FF"
+        }
+    ],
+    "columnB": [
+        {
+            "id": "perro",
+            "color": "",
+            "validConnections": {
+                "columnA": [
+                    "animal"
+                ]
+            }
+        },
+        {
+            "id": "roca",
+            "color": "",
+            "validConnections": {
+                "columnA": [
+                    
+                ]
+            }
+        },
+        {
+            "id": "pino",
+            "color": "",
+            "validConnections": {
+                "columnA": [
+                    "vegetal"
+                ]
+            }
+        },
+        {
+            "id": "gato",
+            "color": "",
+            "validConnections": {
+                "columnA": [
+                    "animal"
+                ]
+            }
+        }
+    ]
+}

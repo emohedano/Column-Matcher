@@ -1,0 +1,61 @@
+ejercicios["ejercicio_1"] = {
+    "columnA": [
+        {
+            "id": "pera",
+            "color": "",
+            "validConnections": {
+                "columnB": [
+                    "verde"
+                ]
+            }
+        },
+        {
+            "id": "sandia",
+            "color": "",
+            "validConnections":{"columnB":  [
+                "rojo"
+            ]
+        }},
+        {
+            "id": "fresa",
+            "color": "",
+            "validConnections": {
+                "columnB": [
+                    "rojo"
+                ]
+            }
+        },
+        {
+            "id": "naranja",
+            "color": "",
+            "validConnections": {
+                "columnB": [
+                    "anaranjado"
+                ]
+            }
+        },
+        {
+            "id": "limon",
+            "color": "",
+            "validConnections": {
+                "columnB": [
+                    "verde"
+                ]
+            }
+        }
+    ],
+    "columnB": [
+        {
+            "id": "rojo",
+            "color": "#FF0000"
+        },
+        {
+            "id": "anaranjado",
+            "color": "#FF8E0D"
+        },
+        {
+            "id": "verde",
+            "color": "#00FF00"
+        }
+    ]
+}

@@ -1,4 +1,8 @@
 
+//Variable que guarda cada ejercicio como un atributo
+var ejercicios = {};
+
+
 var firstEndpoint = null;
 var connectorColor = null;
 /*
@@ -20,7 +24,7 @@ Ejemplos:
 
 */
 
-function generaLista(name, data, conectors, callback) {
+function generaLista(name, data, conectors) {
 
 	var list = '';
 	
@@ -73,7 +77,7 @@ function generaLista(name, data, conectors, callback) {
 
 		});
 
-	
+		
 		$('#' + name).append(list);
 
 		//funcion que se ejecuta al dar click a cualquier endpoint
@@ -92,12 +96,6 @@ function generaLista(name, data, conectors, callback) {
 			if(this != firstEndpoint)
 				$(this).css("backgroundColor","#ffffff")
 		
-
-		//Se ejecuta la funcion de callback
-		if(callback != undefined)			
-			callback();
-		
-
 
 	});
 }
@@ -251,11 +249,11 @@ function validate(listName) {
 				this.setAttribute("stroke", "#000000");		
 
 				errores += 1;
-				$("#"+implicatedElements[0]).find("div.center").css({backgroundImage:"url(bad.png)"})
+				$("#"+implicatedElements[0]).find("div.center").css({backgroundImage:"url(images/bad.png)"})
 
 			}else{
 				aciertos += 1;
-				$("#"+implicatedElements[0]).find("div.center").css({backgroundImage:"url(good.png)"})
+				$("#"+implicatedElements[0]).find("div.center").css({backgroundImage:"url(images/good.png)"})
 			}
 
 		}else{
@@ -266,13 +264,13 @@ function validate(listName) {
 			if(validElements[implicatedColumns[0]].indexOf(implicatedElements[0]) < 0){
 				this.setAttribute("stroke-dasharray", "5,5");
 				this.setAttribute("stroke", "#000000");
-				
+
 				errores += 1;
-				$("#"+implicatedElements[1]).find("div.center").css({backgroundImage:"url(bad.png)"})
+				$("#"+implicatedElements[1]).find("div.center").css({backgroundImage:"url(images/bad.png)"})
 
 			}else{
 				aciertos += 1;
-				$("#"+implicatedElements[1]).find("div.center").css({backgroundImage:"url(good.png)"})
+				$("#"+implicatedElements[1]).find("div.center").css({backgroundImage:"url(images/good.png)"})
 			}
 			
 		}
@@ -285,13 +283,13 @@ function validate(listName) {
 
 }
 
-function reset(listName) {
+function resetExercise(listName) {
 
 	$("path"+((listName != "")?("."+listName):"")).each(function (key, val) {
 			
 		$(this).remove();
 
-	});
+	});	
 
 	$("div.center").css({backgroundImage:""});
 
@@ -301,31 +299,62 @@ function reset(listName) {
 }
 
 
-function addListValidationrules(list1, list2, data){
+function resetAll() {
+
+	$("#curves").empty();
+
+	$("#columnA,#columnB").empty();
+
+	document.getElementById("txtAciertos").value = 0;
+	document.getElementById("txtErrores").value = 0;
+
+}
+
+
+function addListValidationrules(elements){
 
 	
-	$.each(data, function (key, val){
-
-		var validMatch= {};
-
-		validMatch[list2] = val;
+	$.each(elements, function (posicion, element){
 
 		//Se asignan los elementos validos con los que se puede conectar un elemento de la lista uno en la lista 2
 		//Se usa  jQuery.data cuando se manejan objetos JSON
-		jQuery.data(document.getElementById(key), "validMatch", validMatch);
+		jQuery.data(document.getElementById(element.id), "validMatch", element.validConnections);
 
 	});
 
 }
 
-$(document).ready(function(){
 
 
-	generaLista('fruits',columna,'c', function(){
 
-		addListValidationrules('fruits', 'colors', columna_columnb);	
-	});
 
-	generaLista('colors',columnb,'c');
+function loadExercise(excericiseName){
 
-});
+	if (excericiseName == "-1")
+		return;
+
+	var fileref=document.createElement('script');
+		fileref.setAttribute("type","text/javascript");
+		fileref.setAttribute("src", "exercises/"+excericiseName+".json");
+
+	document.getElementsByTagName("head")[0].appendChild(fileref);
+
+	resetAll();
+
+	//Se retrasa la carga del ejercicio para que pueda carcgr el JSON
+	window.setTimeout(function (){	
+		
+		var ejercicio = ejercicios[excericiseName];
+		
+		$.each(ejercicio, function (columnName, elements){		
+
+			generaLista(columnName,elements,'c');
+			addListValidationrules(elements);
+
+		});
+
+	}, 500);
+	
+	
+
+};

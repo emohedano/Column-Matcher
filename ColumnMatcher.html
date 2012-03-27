@@ -2,24 +2,32 @@
 <html>
 	<head>
 		<title>Column Matcher</title>
-		<link rel="stylesheet" type="text/css" href="ColumnMatcher.css"></link>
+		<link rel="stylesheet" type="text/css" href="ColumnMatcher.css"></link>		
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-		<script type="text/javascript" src="columna.json"></script>
-		<script type="text/javascript" src="columnb.json"></script>
-		<script type="text/javascript" src="columna_columnb.json"></script>
 		<script type="text/javascript" src="ColumnMatcher.js"></script>
 
 	</head>
 	<body>
 		
 		<div id="contenedorListas">
-		<div id="menu">
-			<input id="btnValidator" type="button" value="Validar" onclick="validate('fruits')">
-			<input id="btnReset" type="button" value="Reset" onclick="reset('fruits')">
-			<label>Aciertos: </label><input id="txtAciertos" type="text" value="0">
-			<label>Errores: </label><input id="txtErrores" type="text"  value="0">
+		<div id="exercises">			
+			<label>Ejercicio: </label>
+			<select onchange="loadExercise(this.value)">
+				<option value="-1">-- Seleccione --</option>
+				<option value="ejercicio_1">Ejercicio 1</option>
+				<option value="ejercicio_2">Ejercicio 2</option>
+			</select>
+			<input id="btnValidator" type="button" value="Revisar" onclick="validate('columnA')">
+			<input id="btnReset" type="button" value="Reiniciar" onclick="resetExercise('columnA')">
 		</div>
-			<ul id="fruits">
+		<br>
+		<div id="menu">
+			<div id="status">		
+				<label>Aciertos: </label><input id="txtAciertos" type="text" value="0">
+				<label>Errores: </label><input id="txtErrores" type="text"  value="0">
+			</div>
+		</div>
+			<ul id="columnA">
 				
 			</ul>
 
@@ -28,7 +36,7 @@
 				</svg>
 			</div>	
 
-			<ul id="colors">
+			<ul id="columnB">
 
 			</ul>		
 		
