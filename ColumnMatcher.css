@@ -36,8 +36,10 @@ ul li{
 	border:solid 1px #ccc;
 	width:700px;
 	height:100%;
-	z-index:-100;
+	z-index:-1;
 }
+
+
 
 .inline{
 	display: inline-block;	
@@ -60,9 +62,19 @@ ul li{
 	margin: 5px 0;
 }
 
-.center{				
-	background-color: #FFF;
-	background: no-repeat;
+.activo{
+
+	background: #cccccc;
+	cursor: pointer;
+}
+
+.pasivo{
+	background: #ffffff;
+}
+
+
+
+.center{			
 	border:solid 1px #ccc;
 	width: 100px;
 	height:40px;
@@ -72,7 +84,8 @@ ul li{
 	-moz-box-shadow: 0 0 5px 5px #ccc;
 	-webkit-box-shadow: 0 0 5px 5px#ccc;
 	box-shadow: 0 0 10px 1px #ddd;
-	margin: 5px 5px;	
+	margin: 5px 5px;
+	z-index:10;	
 }
 
 #btnValidator,#btnReset{
@@ -134,4 +147,13 @@ label {
 
 #txtErrores{
 	color: #FF0000;
+}
+
+.good{
+
+	background: #ffffff url(images/good.png) no-repeat;
+}
+
+.bad{
+	background: #ffffff url(images/bad.png) no-repeat;
 }

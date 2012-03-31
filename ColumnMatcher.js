@@ -47,7 +47,7 @@ function generaLista(name, data, conectors) {
 				element = '<li id="' + columnElement.id + '" ' + colorElement + ' ' + listId + '>' +
 							'<div class="top" ' + idElement + '></div>' +
 							'<div class="inline left" ' + idElement + '></div>' +
-							'<div class="inline center" ' + idElement + '>' + columnElement.id + '</div>' +
+							'<div class="inline pasivo center" ' + idElement + '>' + columnElement.id + '</div>' +
 							'<div class="inline right" ' + idElement + '></div>' +
 							'<div class="bottom" ' + idElement + '></div>' +
 							'</li>';
@@ -62,7 +62,7 @@ function generaLista(name, data, conectors) {
 				if(conectors.indexOf('l') > -1)
 					element  += '<div class="inline left" ' + idElement + '></div>';
 
-				element  += '<div class="inline center" ' + idElement + '>' + columnElement.id + '</div>';
+				element  += '<div class="inline pasivo center" ' + idElement + '>' + columnElement.id + '</div>';
 
 				if(conectors.indexOf('r') > -1)
 					element  += '<div class="inline right" ' + idElement + '></div>';
@@ -82,19 +82,19 @@ function generaLista(name, data, conectors) {
 
 		//funcion que se ejecuta al dar click a cualquier endpoint
 					
-		$('#' + name + ' li ').find("div.top, div.left, div.right, div.bottom, div.center").click( function(e) {				
+		$('#' + name + ' li ').find("div.center").mousedown( function(e) {				
 			
 			clickOnEndpoint(this);
 
 		});
 
-		$('#' + name + ' li ').find("div.top, div.left, div.right, div.bottom, div.center").hover(function() {				
+		$('#' + name + ' li ').find("div.center").hover(function() {				
 			
-			$(this).css("backgroundColor","#cccccc")
+			$(this).removeClass("pasivo").addClass("activo");
 
 		}, function() {					
 			if(this != firstEndpoint)
-				$(this).css("backgroundColor","#ffffff")
+				$(this).removeClass("activo").addClass("pasivo");
 		
 
 	});
@@ -117,8 +117,7 @@ function clickOnEndpoint(element) {
 				if(connectorColor == null || connectorColor == "null" || connectorColor == "")
 					connectorColor=document.getElementById(idFirstElement).dataset.colorElement;
 				
-				$(firstEndpoint).css("backgroundColor","#cccccc")
-
+				$(firstEndpoint).removeClass("pasivo").addClass("activo");
 
 			} else {
 
@@ -168,14 +167,13 @@ function clickOnEndpoint(element) {
 					path.setAttribute("stroke", connectorColor);
 					path.setAttribute("stroke-width", '5');
 					path.setAttribute("fill", 'none');
-
 					document.getElementById("curves").appendChild(path);
 				}
 
 				firstEndpoint = null;
 				connectorColor = null;
 
-				$('#' + idFirstElement + ' div').css("backgroundColor","#ffffff")
+				$('#' + idFirstElement + ' div.center').removeClass("activo").addClass("pasivo");
 
 			}
 
@@ -249,11 +247,11 @@ function validate(listName) {
 				this.setAttribute("stroke", "#000000");		
 
 				errores += 1;
-				$("#"+implicatedElements[0]).find("div.center").css({backgroundImage:"url(images/bad.png)"})
+				$("#"+implicatedElements[0]).find("div.center").removeClass("good").addClass("bad");
 
 			}else{
 				aciertos += 1;
-				$("#"+implicatedElements[0]).find("div.center").css({backgroundImage:"url(images/good.png)"})
+				$("#"+implicatedElements[0]).find("div.center").removeClass("bad").addClass("good");
 			}
 
 		}else{
@@ -266,11 +264,11 @@ function validate(listName) {
 				this.setAttribute("stroke", "#000000");
 
 				errores += 1;
-				$("#"+implicatedElements[1]).find("div.center").css({backgroundImage:"url(images/bad.png)"})
+				$("#"+implicatedElements[1]).find("div.center").removeClass("good").addClass("bad");
 
 			}else{
 				aciertos += 1;
-				$("#"+implicatedElements[1]).find("div.center").css({backgroundImage:"url(images/good.png)"})
+				$("#"+implicatedElements[1]).find("div.center").removeClass("bad").addClass("good");
 			}
 			
 		}
@@ -291,7 +289,7 @@ function resetExercise(listName) {
 
 	});	
 
-	$("div.center").css({backgroundImage:""});
+	$("div.center").removeClass("good bad");
 
 	document.getElementById("txtAciertos").value = 0;
 	document.getElementById("txtErrores").value = 0;
