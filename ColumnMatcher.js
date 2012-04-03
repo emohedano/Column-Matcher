@@ -5,6 +5,8 @@ var ejercicios = {};
 
 var firstEndpoint = null;
 var connectorColor = null;
+
+var ejercicioRevisado = false;
 /*
 GeneraLista
 
@@ -103,7 +105,9 @@ function generaLista(name, data, conectors) {
 
 function clickOnEndpoint(element) {
 
-
+	if(ejercicioRevisado)
+		return;
+	
 	var idFirstElement = null;	
 
 	if( firstEndpoint == null) {
@@ -225,6 +229,7 @@ function calculateEndPoint(element) {
 
 function validate(listName) {
 
+
 	var aciertos = 0;
 	var errores = 0;
 
@@ -282,6 +287,7 @@ function validate(listName) {
 	document.getElementById("txtAciertos").value = aciertos;
 	document.getElementById("txtErrores").value = errores;
 
+	ejercicioRevisado = true;
 }
 
 function resetExercise(listName) {
