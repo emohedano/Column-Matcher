@@ -103,79 +103,82 @@ function generaLista(name, data, conectors) {
 
 function clickOnEndpoint(element) {
 
-	
 
-	var idFirstElement = null;
+	var idFirstElement = null;	
 
+	if( firstEndpoint == null) {
 
+		firstEndpoint = element;
+		idFirstElement = element.dataset.idElement
 
-			if( firstEndpoint == null) {
+		if(connectorColor == null || connectorColor == "null" || connectorColor == "")
+			connectorColor=document.getElementById(idFirstElement).dataset.colorElement;
+		
+		$(firstEndpoint).removeClass("pasivo").addClass("activo");
 
-				firstEndpoint = element;
-				idFirstElement = element.dataset.idElement
+	} else {
 
-				if(connectorColor == null || connectorColor == "null" || connectorColor == "")
-					connectorColor=document.getElementById(idFirstElement).dataset.colorElement;
-				
-				$(firstEndpoint).removeClass("pasivo").addClass("activo");
+		var secondEndpoint= element;
+		idFirstElement = firstEndpoint.dataset.idElement;
+		idSecondElement = secondEndpoint.dataset.idElement;	
 
-			} else {
+		var firstElement = document.getElementById(idFirstElement);
+		var secondElement = document.getElementById(idSecondElement);
+		
 
+		//Si no son elementos de la misma lista
+		if(firstElement.dataset.listId != secondElement.dataset.listId){
 
-				var secondEndpoint= element;
-				idFirstElement = firstEndpoint.dataset.idElement;
-				idSecondElement = secondEndpoint.dataset.idElement;
-
-				var firstElement = document.getElementById(idFirstElement);
-				var secondElement = document.getElementById(idSecondElement);
-				
-				if(connectorColor == null || connectorColor == "null" || connectorColor == "")
-					connectorColor = secondElement.dataset.colorElement;
-
-				//Se determinan las coordenadas de los endpoints
-				firstEndpoint.coords = calculateEndPoint(firstEndpoint);
-				secondEndpoint.coords = calculateEndPoint(secondEndpoint);
-
-
-				var x1 = firstEndpoint.coords.x;
-				var y1 = firstEndpoint.coords.y;
-
-				var x2 = secondEndpoint.coords.x;
-				var y2 = secondEndpoint.coords.y;
-
-
-				//Se determinan las coordenadas del punto de control utilizado para modificar la curva cuadratica
-				var controlPoint = calculateControlPoint(x1, y1, x2, y2,"first");
-				var controlPoint2 = calculateControlPoint(x1, y1, x2, y2, "second");
-
-
-				if(document.getElementById(idFirstElement  +  secondEndpoint.dataset.idElement + "Curve") != null)
-					$("#" + idFirstElement  +  secondEndpoint.dataset.idElement + "Curve").attr("d","M " + x1 + " " + y1 + " T " + e.x + " " + e.y);
-				else {
-
-					var SVG = { ns: "http://www.w3.org/2000/svg" };
-					var path = document.createElementNS(SVG.ns, "path");
-
-					path.setAttribute("id", '"' + idFirstElement  +  secondEndpoint.dataset.idElement + 'Curve"');
-					path.setAttribute("class", firstElement.dataset.listId  + ' ' + secondElement.dataset.listId);
-					path.setAttribute("implicatedElements", idFirstElement  + ' ' + secondEndpoint.dataset.idElement);
-
-					//Se genera la curva cuadratica
-					path.setAttribute("d", 'M ' + x1 + ' ' + y1 + ' C ' + controlPoint.x + ' ' + controlPoint.y + ' ' + controlPoint2.x + ' ' + controlPoint2.y + ' ' + x2 + ' ' + y2);
 					
-					//Se decora la curva
-					path.setAttribute("stroke", connectorColor);
-					path.setAttribute("stroke-width", '5');
-					path.setAttribute("fill", 'none');
-					document.getElementById("curves").appendChild(path);
-				}
+			
+			if(connectorColor == null || connectorColor == "null" || connectorColor == "")
+				connectorColor = secondElement.dataset.colorElement;
 
-				firstEndpoint = null;
-				connectorColor = null;
+			//Se determinan las coordenadas de los endpoints
+			firstEndpoint.coords = calculateEndPoint(firstEndpoint);
+			secondEndpoint.coords = calculateEndPoint(secondEndpoint);
 
-				$('#' + idFirstElement + ' div.center').removeClass("activo").addClass("pasivo");
 
+			var x1 = firstEndpoint.coords.x;
+			var y1 = firstEndpoint.coords.y;
+
+			var x2 = secondEndpoint.coords.x;
+			var y2 = secondEndpoint.coords.y;
+
+
+			//Se determinan las coordenadas del punto de control utilizado para modificar la curva cuadratica
+			var controlPoint = calculateControlPoint(x1, y1, x2, y2,"first");
+			var controlPoint2 = calculateControlPoint(x1, y1, x2, y2, "second");
+
+
+			if(document.getElementById(idFirstElement  +  secondEndpoint.dataset.idElement + "Curve") != null)
+				$("#" + idFirstElement  +  secondEndpoint.dataset.idElement + "Curve").attr("d","M " + x1 + " " + y1 + " T " + e.x + " " + e.y);
+			else {
+
+				var SVG = { ns: "http://www.w3.org/2000/svg" };
+				var path = document.createElementNS(SVG.ns, "path");
+
+				path.setAttribute("id", '"' + idFirstElement  +  secondEndpoint.dataset.idElement + 'Curve"');
+				path.setAttribute("class", firstElement.dataset.listId  + ' ' + secondElement.dataset.listId);
+				path.setAttribute("implicatedElements", idFirstElement  + ' ' + secondEndpoint.dataset.idElement);
+
+				//Se genera la curva cuadratica
+				path.setAttribute("d", 'M ' + x1 + ' ' + y1 + ' C ' + controlPoint.x + ' ' + controlPoint.y + ' ' + controlPoint2.x + ' ' + controlPoint2.y + ' ' + x2 + ' ' + y2);
+				
+				//Se decora la curva
+				path.setAttribute("stroke", connectorColor);
+				path.setAttribute("stroke-width", '5');
+				path.setAttribute("fill", 'none');
+				document.getElementById("curves").appendChild(path);
 			}
+
+			firstEndpoint = null;
+			connectorColor = null;
+
+			$('#' + idFirstElement + ' div.center').removeClass("activo").addClass("pasivo");
+
+		}
+	}
 
 }
 
